@@ -4,11 +4,12 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
 from app.models import User
 
+
 auth = Blueprint('auth', __name__, template_folder='authtemplates')
 
 from app.models import db
 
-@auth.route('/login', methods = ["GET","POST"])
+@auth.route('/api/login', methods = ["GET","POST"])
 def logMeIn():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -18,11 +19,10 @@ def logMeIn():
         if form.validate():
             username = form.username.data
             password = form.password.data
-            # Query user based off of username
             user = User.query.filter_by(username=username).first()
             print(user.username, user.password, user.id)
             if user:
-                # compare passwords
+                
                 if check_password_hash(user.password, password):
                     flash('You have successfully logged in!', 'success')
                     login_user(user)
@@ -41,7 +41,7 @@ def logMeOut():
     logout_user()
     return redirect(url_for('auth.logMeIn'))
 
-@auth.route('/signup', methods=["GET", "POST"])
+@auth.route('/api/signup', methods=["GET", "POST"])
 def signMeUp():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -79,7 +79,7 @@ def apiSignMeUp():
 
 from app.apiauthhelper import basic_auth, token_auth
 
-@auth.route('/token', methods=['POST'])
+@auth.route('/api/token', methods=['POST'])
 @basic_auth.login_required
 def getToken():
     user = basic_auth.current_user()

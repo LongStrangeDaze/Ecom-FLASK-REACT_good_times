@@ -7,24 +7,15 @@ from flask_cors import CORS
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from werkzeug.security import check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-
+import psycopg2
 from .auth.routes import auth
-from .shop.routes import shop
+from .shop.routes import shop   
 from .models import User
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'NEED DB TO USE!'
-db = SQLAlchemy(app)
-app.config['SECRET_KEY'] = 'thisissecretkey'
-
-
 login = LoginManager()
-moment = Moment(app)
 CORS(app)
-
-
 
 
 @login.user_loader
@@ -45,7 +36,7 @@ migrate = Migrate(app, db)
 login.init_app(app)
 
 
-login.login_view = 'auth.logMeIn'
+# login.login_view = 'auth.logMeIn'
 
 
 from . import routes
